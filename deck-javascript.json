@@ -1,0 +1,23 @@
+{
+  "deck": {
+    "id": "deck-js", "name": "JavaScript: Основи",
+    "desc": "Типи, змінні, функції",
+    "icon": "💻", "color": "#F7DF1E", "count": 3, "custom": false
+  },
+  "cards": [
+    {
+      "id": "js-01", "deckId": "deck-js",
+      "front": "Що таке hoisting?",
+      "back": "Підняття оголошень var і function на початок їх scope.",
+      "example": "console.log(x); // undefined (не помилка!)\nvar x = 5;",
+      "stats": { "seen": 0, "right": 0, "wrong": 0 }
+    },
+    {
+      "id": "js-02", "deckId": "deck-js",
+      "front": "Різниця == і ===?",
+      "back": "== порівнює зі приведенням типів, === без приведення.",
+      "example": "1 == '1'  // true\n1 === '1' // false",
+      "stats": { "seen": 0, "right": 0, "wrong": 0 }
+    }
+  ]
+}
