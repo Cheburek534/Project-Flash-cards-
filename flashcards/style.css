@@ -4,6 +4,23 @@
   --border: #E0E0E8; --ok: #27AE60; --fail: #E74C3C;
 }
 
+[data-theme='dark'] {
+  --bg: #1A1A2E;  --bg2: #16213E;
+  --text: #E8E8F0; --accent: #7B68EE;
+  --border: #2D2D4E; --ok: #2ECC71; --fail: #E74C3C;
+}
+
+[data-card-style='neon'] {
+  --cr: 8px;
+  --cf: 'Courier New', monospace;
+  --cb: 2px solid var(--accent);
+  --glow: 0 0 18px var(--accent);
+}
+
+/* Плавний перехід при зміні теми */
+body { transition: background .3s, color .3s; }
+
+
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
 .hidden { display:none; }
