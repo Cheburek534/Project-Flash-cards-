@@ -1,0 +1,13 @@
+[data-theme='light'] {
+  --bg: #F5F7FA;   --bg2: #FFFFFF;
+  --text: #1A1A2E; --accent: #4A90D9;
+  --border: #E0E0E8; --ok: #27AE60; --fail: #E74C3C;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
+.hidden { display:none; }
+.page   { max-width:800px; margin:2rem auto; padding:0 1rem; }
+.navbar { display:flex; align-items:center; padding:1rem 2rem;
+          background:var(--bg2); border-bottom:1px solid var(--border); }
+.brand  { font-weight:bold; margin-right:auto; }
