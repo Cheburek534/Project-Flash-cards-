@@ -5,6 +5,7 @@ const DEFAULT_STATE = {
   decks:    [],
   cards:    [],
   settings: { theme: 'light', cardStyle: 'classic', voiceOn: false },
+  session: { correct:0, wrong:0, timePerCard:[] },
   progress: {
     total: 0, correct: 0, streak: 0,
     lastDate: null, activity: {}, done: []
@@ -21,6 +22,5 @@ export const StorageModule = {
   save(state)  { localStorage.setItem(KEY, JSON.stringify(state)); },
   reset()      { localStorage.removeItem(KEY); }
 };
-
 
 
