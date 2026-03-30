@@ -1,0 +1,30 @@
+[data-theme='light'] {
+  --bg: #F5F7FA;   --bg2: #FFFFFF;
+  --text: #1A1A2E; --accent: #4A90D9;
+  --border: #E0E0E8; --ok: #27AE60; --fail: #E74C3C;
+}
+
+[data-theme='dark'] {
+  --bg: #1A1A2E;  --bg2: #16213E;
+  --text: #E8E8F0; --accent: #7B68EE;
+  --border: #2D2D4E; --ok: #2ECC71; --fail: #E74C3C;
+}
+
+[data-card-style='neon'] {
+  --cr: 8px;
+  --cf: 'Courier New', monospace;
+  --cb: 2px solid var(--accent);
+  --glow: 0 0 18px var(--accent);
+}
+
+/* Плавний перехід при зміні теми */
+body { transition: background .3s, color .3s; }
+
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif; }
+.hidden { display:none; }
+.page   { max-width:800px; margin:2rem auto; padding:0 1rem; }
+.navbar { display:flex; align-items:center; padding:1rem 2rem;
+          background:var(--bg2); border-bottom:1px solid var(--border); }
+.brand  { font-weight:bold; margin-right:auto; }
