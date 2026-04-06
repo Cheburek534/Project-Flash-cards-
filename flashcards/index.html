@@ -3,24 +3,201 @@
 <head>
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>FlashCards</title>
+  <title>FlashCards 🃏</title>
   <link rel='stylesheet' href='style.css'>
 </head>
 <body>
+ 
+  <!-- ═══ НАВІГАЦІЯ ═══ -->
   <nav class='navbar'>
     <span class='brand'>🃏 FlashCards</span>
+    <div class='nav-links'>
+      <a href='#' onclick="showPage('home')">Головна</a>
+      <a href='#' onclick="showPage('decks')">Колоди</a>
+      <a href='#' onclick="showPage('stats')">Прогрес</a>
+      <a href='#' onclick="showPage('achievements')">Досягнення</a>
+      <a href='#' onclick="showPage('settings')">Налаштування</a>
+    </div>
     <button id='theme-btn' onclick='ThemeModule.cycle()'>🌙</button>
   </nav>
-
+ 
+  <!-- ═══ ГОЛОВНА ═══ -->
   <section id='page-home' class='page'>
-    <h1>Привіт!</h1>
-    <button onclick="showPage('decks')">Колоди</button>
+    <div class='hero'>
+      <h1>Вчися розумніше 🧠</h1>
+      <p class='hero-sub'>Флеш-картки · Тести · Голос · Зникнення</p>
+      <p>Streak: <strong id='home-streak'>0</strong> 🔥</p>
+      <button onclick="showPage('decks')" class='hero-btn'>Розпочати навчання</button>
+    </div>
   </section>
-
-  <section id='page-decks' class='page hidden'><h2>Колоди</h2></section>
-  <section id='page-study' class='page hidden'><h2>Навчання</h2></section>
-
+ 
+  <!-- ═══ КОЛОДИ ═══ -->
+  <section id='page-decks' class='page hidden'>
+    <div class='page-top'>
+      <h2>Мої колоди 📚</h2>
+      <button onclick='CardsModule.openModal()'>+ Нова колода</button>
+    </div>
+    <div id='decks-grid' class='decks-grid'></div>
+  </section>
+ 
+  <!-- ═══ НАВЧАННЯ ═══ -->
+  <section id='page-study' class='page hidden'>
+    <div class='study-top'>
+      <span id='card-counter'>1 / 10</span>
+      <div class='progress-bar'><div id='progress-fill'></div></div>
+      <button class='secondary' onclick='StudyModule.finish()'>✕ Завершити</button>
+    </div>
+    <div id='flashcard' class='flashcard' onclick='StudyModule.flip()'>
+      <div class='card-inner'>
+        <div class='card-front'>
+          <p id='card-front'></p>
+          <small id='card-hint' class='card-hint'></small>
+          <small class='flip-hint'>Клікни щоб побачити відповідь 👆</small>
+        </div>
+        <div class='card-back'>
+          <p id='card-back'></p>
+          <code id='card-example' class='card-example'></code>
+        </div>
+      </div>
+    </div>
+    <div id='rating-buttons' class='rating-btns hidden'>
+      <button class='fail-btn' onclick="StudyModule.rate('fail')">❌ Не знав</button>
+      <button class='ok-btn'   onclick="StudyModule.rate('ok')">✅ Знав</button>
+    </div>
+    <div id='voice-study-area' class='voice-area hidden'>
+      <button id='voice-study-btn' onclick='listenForStudy()'>🎤 Відповісти голосом</button>
+      <span id='voice-preview' class='voice-preview'></span>
+    </div>
+  </section>
+ 
+  <!-- ═══ РЕЗУЛЬТАТИ ═══ -->
+  <section id='page-results' class='page hidden'>
+    <h2>Сесія завершена 🎉</h2>
+    <div class='metrics'>
+      <div class='metric'><big id='result-shown'>0</big><span>Переглянуто</span></div>
+      <div class='metric'><big id='result-correct'>0</big><span>Правильно</span></div>
+      <div class='metric'><big id='result-pct'>0%</big><span>Точність</span></div>
+    </div>
+    <button onclick="showPage('decks')">← До колод</button>
+    <button onclick="ReflectionModule.showAfterSession(window.state)" class='secondary'>
+      📊 Детальна статистика
+    </button>
+  </section>
+ 
+  <!-- ═══ ТЕСТ ═══ -->
+  <section id='page-quiz' class='page hidden'>
+    <div class='quiz-top'>
+      <span id='quiz-counter'>1 / 10</span>
+      <span id='quiz-score'>0 балів</span>
+      <span id='quiz-timer' class='timer'>⏱ 15с</span>
+    </div>
+    <div class='timer-bar'><div id='timer-fill'></div></div>
+    <p id='quiz-question' class='quiz-q'></p>
+    <div id='quiz-options'></div>
+    <div class='voice-area' style='margin-top:1rem'>
+      <button id='voice-quiz-btn' onclick='QuizModule.listenVoice()'>🎤 Голосова відповідь</button>
+      <span id='voice-quiz-preview' class='voice-preview'></span>
+    </div>
+    <div id='quiz-result' class='hidden' style='text-align:center;margin-top:2rem'>
+      <h3>Тест завершено! 🎉</h3>
+      <p>Результат: <strong id='quiz-final-score'>0</strong> балів
+         (<span id='quiz-final-pct'>0%</span>)</p>
+      <button onclick="showPage('decks')">← До колод</button>
+    </div>
+  </section>
+ 
+  <!-- ═══ ЗНИКНЕННЯ ═══ -->
+  <section id='page-vanish' class='page hidden'>
+    <h2>🌫️ Режим зникнення
+      <span id='vanish-lvl' class='badge-pill'>Рівень 1</span>
+    </h2>
+    <p class='vanish-q-label'>Питання:</p>
+    <div id='vanish-q' class='vanish-q'></div>
+    <p class='vanish-a-label'>Відповідь (знайди пропущені слова):</p>
+    <div id='vanish-a' class='vanish-a'></div>
+    <p id='vanish-hint' class='vanish-hint'></p>
+    <input id='vanish-input' type='text' class='vanish-input'
+           placeholder='Введи пропущені слова через пробіл...'
+           onkeydown="if(event.key==='Enter') VanishModule.check()">
+    <div class='vanish-btns'>
+      <button onclick='VanishModule.check()'>✓ Перевірити</button>
+      <button onclick='VanishModule.reveal()' class='secondary'>👁 Показати</button>
+      <button onclick='VanishModule.hideMore()' class='secondary'>−15% слів</button>
+    </div>
+    <p id='vanish-msg' class='hidden vanish-msg'></p>
+  </section>
+ 
+  <!-- ═══ СТАТИСТИКА ═══ -->
+  <section id='page-stats' class='page hidden'>
+    <h2>Мій прогрес 📊</h2>
+    <div class='metrics'>
+      <div class='metric'><big id='stat-total'>0</big><span>карток</span></div>
+      <div class='metric'><big id='stat-pct'>0%</big><span>точність</span></div>
+      <div class='metric'><big id='stat-streak'>0 днів</big><span>streak</span></div>
+      <div class='metric'><big id='stat-badges'>0</big><span>досягнень</span></div>
+    </div>
+    <h3 style='margin-top:2rem'>Активність за 28 днів</h3>
+    <canvas id='heatmap-canvas' width='200' height='160'></canvas>
+    <h3 style='margin-top:2rem'>Слабкі картки 🎯</h3>
+    <div id='weak-list'></div>
+  </section>
+ 
+  <!-- ═══ ДОСЯГНЕННЯ ═══ -->
+  <section id='page-achievements' class='page hidden'>
+    <h2>Досягнення 🏆</h2>
+    <p>Очки: <strong id='total-pts'>0</strong></p>
+    <div id='badges-grid' class='badges-grid'></div>
+  </section>
+ 
+  <!-- ═══ НАЛАШТУВАННЯ ═══ -->
+  <section id='page-settings' class='page hidden'>
+    <h2>Налаштування ⚙️</h2>
+    <label class='setting-label'>Тема сайту</label>
+    <div id='theme-picker' class='picker'></div>
+    <label class='setting-label' style='margin-top:1.5rem'>Стиль карток</label>
+    <div id='style-picker' class='picker'></div>
+    <div style='margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap'>
+      <button onclick='StorageModule.exportFile(state)'>⬇ Зберегти дані</button>
+      <button class='secondary'
+        onclick="if(confirm('Скинути всі дані?')){StorageModule.reset();location.reload();}">
+        🗑 Скинути все
+      </button>
+    </div>
+  </section>
+ 
+  <!-- ═══ МОДАЛЬ нової колоди ═══ -->
+  <div id='modal' class='modal hidden'>
+    <div class='modal-box'>
+      <h3>Нова колода</h3>
+      <input id='f-name'  type='text'  placeholder='Назва *' required>
+      <input id='f-desc'  type='text'  placeholder='Опис'>
+      <input id='f-icon'  type='text'  placeholder='Емодзі 📚' maxlength='2'>
+      <input id='f-color' type='color' value='#4A90D9'>
+      <div class='modal-actions'>
+        <button onclick='CardsModule.createDeck()'>Створити</button>
+        <button class='secondary'
+          onclick="document.getElementById('modal').classList.add('hidden')">Скасувати</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ═══ МОДАЛЬ рефлексії ═══ -->
+  <div id='modal-reflect' class='modal hidden'>
+    <div class='modal-box'>
+      <h3>Результати сесії 📊</h3>
+      <div class='metrics' style='grid-template-columns:1fr 1fr'>
+        <div class='metric'><big id='r-pct'>0%</big><span>Точність</span></div>
+        <div class='metric'><big id='r-avg'>0с</big><span>Середній час</span></div>
+      </div>
+      <canvas id='r-chart' width='380' height='150'></canvas>
+      <button onclick="document.getElementById('modal-reflect').classList.add('hidden')"
+        style='margin-top:1rem'>Закрити</button>
+    </div>
+  </div>
+ 
+  <!-- TOAST -->
+  <div id='toast' class='toast hidden'></div>
+ 
   <script type='module' src='app.js'></script>
 </body>
 </html>
-
