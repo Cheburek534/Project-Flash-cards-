@@ -55,3 +55,66 @@ export class QuizModule {
    });
    this._startTimer();
  }
+ _startTimer() {
+   this.left = this.limit;
+   this._updateTimer();
+   clearInterval(this.timer);
+   this.timer = setInterval(() => {
+     this.left--;
+     this._updateTimer();
+     if (this.left <= 0) { clearInterval(this.timer); this.answer(null); }
+   }, 1000);
+ }
+ 
+ _updateTimer() {
+   const el   = document.getElementById('quiz-timer');
+   const fill = document.getElementById('timer-fill');
+   if (el) {
+     el.textContent = '⏱️ '+this.left+'с';
+     el.classList.toggle('urgent', this.left <= 5);
+   }
+   if (fill) fill.style.width = (this.left/this.limit*100)+'%';
+ }
+ 
+ answer(selected) {
+   clearInterval(this.timer);
+   const q = this.qs[this.idx];
+   const ok = selected !== null && (
+     selected === q.answer ||
+     (this.voice && this.voice.matches(selected, q.answer))
+   );
+   // Підсвічуємо кнопки
+   document.querySelectorAll('.opt').forEach(btn => {
+     btn.disabled = true;
+     const txt = btn.textContent.slice(3);
+     if (txt === q.answer) btn.classList.add('right');
+     else if (selected && txt === selected) btn.classList.add('wrong');
+   });
+   if (ok) {
+     this.score += 10 + Math.round(this.left / this.limit * 10);
+     if (this.left > 12) {
+       this.state.progress.fastAnswers =
+         (this.state.progress.fastAnswers || 0) + 1;
+     }
+   }
+   setTimeout(() => { this.idx++; this._showQ(); }, 1500);
+ }
+ 
+ listenVoice() {
+   if (!this.voice?.ok) { alert('Голос не підтримується'); return; }
+   this.voice.listen(text => this.answer(text));
+ }
+ 
+ _end() {
+   clearInterval(this.timer);
+   const max = this.qs.length * 20;
+   const pct = Math.round(this.score / max * 100);
+   document.getElementById('quiz-options').innerHTML   = '';
+   document.getElementById('quiz-question').textContent = '';
+   document.getElementById('quiz-final-score').textContent = this.score+' / '+max;
+   document.getElementById('quiz-final-pct').textContent   = pct+'%';
+   document.getElementById('quiz-result').classList.remove('hidden');
+   if (window.AchievementsModule) window.AchievementsModule.check(this.state);
+   StorageModule.save(this.state);
+ }
+}
