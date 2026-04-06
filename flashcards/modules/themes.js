@@ -1,7 +1,7 @@
 import { StorageModule } from './storage.js';
 
 export const ThemeModule = {
-  THEMES: ['light', 'dark'],  // Поки дві теми, розширимо в тижні 4
+  THEMES: ['light', 'dark'],
 
   apply(theme, style) {
     document.documentElement.setAttribute('data-theme', theme);
