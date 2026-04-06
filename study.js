@@ -1,22 +1,27 @@
+// —— modules/study.js ————————————————————————————————————————————
+import { StorageModule } from './storage.js';
+
 export class StudyModule {
   constructor(state) {
-    this.state = state;
-    this.cardStart = null;
-    this.currentDeck = null;
+    this.state      = state;
+    this.cards      = [];
+    this.index      = 0;
+    this.flipped    = false;
+    this.correct    = 0;
+    this.shown      = 0;
+    this.cardStart  = null;
   }
 
   start(deckId) {
-    this.currentDeck = deckId;
-    this.state.session = { correct: 0, wrong: 0, timePerCard: [] };
-    this.cardStart = Date.now();
+    this.cards = this.state.cards
+      .filter(c => c.deckId === deckId)
+      .sort(() => Math.random() - 0.5);
+    if (!this.cards.length) { alert('В цій колоді немає карток!'); return; }
+    this.index   = 0; this.flipped = false;
+    this.correct = 0; this.shown   = 0;
+    this.state.session = { correct:0, wrong:0, timePerCard:[] };
+    showPage('study');
+    this.showCard();
   }
 
-  rate(isCorrect) {
-    const elapsed = (Date.now() - this.cardStart) / 1000;
-    this.state.session.timePerCard.push(elapsed);
-    if (isCorrect) this.state.session.correct += 1;
-    else this.state.session.wrong += 1;
-    this.cardStart = Date.now();
-  }
-}
-
+ 
