@@ -1,4 +1,4 @@
-// —— modules/study.js ————————————————————————————————————————————
+
 import { StorageModule } from './storage.js';
 
 export class StudyModule {
@@ -61,4 +61,48 @@ export class StudyModule {
       document.getElementById('voice-study-area').classList.remove('hidden');
     }
   }
+
+  rate(result) {
+    const card = this.cards[this.index];
+    if (!card) return;
+    card.stats.seen++;
+    if (result === 'ok') {
+      this.correct++; this.state.session.correct++; card.stats.right++;
+    } else {
+      this.state.session.wrong++; card.stats.wrong++;
+    }
+    this.index++;
+    this.showCard();
+  }
+
+  finish() {
+    this.state.progress.total   += this.shown;
+    this.state.progress.correct += this.correct;
+    // Streak
+    const today = new Date().toDateString();
+    if (this.state.progress.lastDate !== today) {
+      const yd = new Date(); yd.setDate(yd.getDate()-1);
+      this.state.progress.streak =
+        this.state.progress.lastDate === yd.toDateString()
+          ? this.state.progress.streak + 1 : 1;
+      this.state.progress.lastDate = today;
+    }
+    const day = new Date().toISOString().slice(0,10);
+    this.state.progress.activity[day] =
+      (this.state.progress.activity[day] || 0) + this.shown;
+    StorageModule.save(this.state);
+    
+    const pct = this.shown ? Math.round(this.correct/this.shown*100) : 0;
+    document.getElementById('result-shown').textContent   = this.shown;
+    document.getElementById('result-correct').textContent = this.correct;
+    document.getElementById('result-pct').textContent     = pct + '%';
+    
+    if (window.AchievementsModule) window.AchievementsModule.check(this.state);
+    if (window.ReflectionModule)
+      window.ReflectionModule.showAfterSession(this.state);
+    
+    showPage('results');
+  }
+}
+
  
