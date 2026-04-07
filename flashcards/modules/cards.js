@@ -13,7 +13,6 @@ export const CardsModule = {
     window.state.decks.push(deck);
     StorageModule.save(window.state);
     document.getElementById('modal').classList.add('hidden');
-    // Очищуємо поля
     ['f-name','f-desc','f-icon'].forEach(id => document.getElementById(id).value='');
     this.renderDecks(window.state);
   },

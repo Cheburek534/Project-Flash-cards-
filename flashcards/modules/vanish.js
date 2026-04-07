@@ -61,7 +61,6 @@ export class VanishModule {
     if (ok) {
       msg.textContent  = '✅ Правильно!';
       msg.style.color  = 'var(--ok)';
-      // Зберігаємо максимальний рівень
       const prev = this.state.progress.vanishMax || 0;
       if (this.level > prev) {
         this.state.progress.vanishMax = this.level;

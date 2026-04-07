@@ -6,18 +6,15 @@ import { ReflectionModule } from './modules/reflection.js';
 import { AchievementsModule } from './modules/achievements.js';
 import { VoiceModule } from './modules/voice.js';
 
-// 1. Ініціалізація стану та головних модулів
 window.state = StorageModule.load();
 window.voice = new VoiceModule();
 window.StudyModule = new StudyClass(window.state);
 window.QuizModule = new QuizClass(window.state, window.voice);
 
-// ПРИВ'ЯЗКА МОДУЛІВ ДО WINDOW (для роботи onclick в HTML)
-window.StorageModule = StorageModule; // ВИПРАВЛЕННЯ ДЛЯ КНОПКИ СКИДАННЯ
+window.StorageModule = StorageModule;
 window.ReflectionModule = ReflectionModule;
 window.ThemeModule = ThemeModule;
 
-// 2. Головна функція для голосової відповіді
 window.listenForStudy = function() {
   if (!window.voice || !window.voice.ok) {
     return alert("Голосове розпізнавання не підтримується у цьому браузері.");
@@ -33,7 +30,6 @@ window.listenForStudy = function() {
 
     const lowerText = text.toLowerCase();
 
-    // Команди "ЗНАВ" / "НЕ ЗНАВ"
     const successPhrases = ['знав', 'знаю', 'правильно', 'вірно', 'так'];
     if (successPhrases.some(phrase => lowerText.includes(phrase))) {
       window.StudyModule.rate('ok');
@@ -46,14 +42,12 @@ window.listenForStudy = function() {
       return;
     }
 
-    // Перевірка по змісту картки
     if (window.voice.matches(text, currentCard.back)) {
       window.StudyModule.rate('ok');
     }
   });
 };
 
-// 3. Навігація
 window.showPage = function(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   const target = document.getElementById('page-' + pageId);
@@ -64,7 +58,6 @@ window.showPage = function(pageId) {
   if (pageId === 'decks') window.CardsModule.renderDecks();
 };
 
-// 4. Керування колодами
 window.CardsModule = {
   openModal() { document.getElementById('modal').classList.remove('hidden'); },
   createDeck() {
@@ -104,7 +97,6 @@ window.CardsModule = {
   }
 };
 
-// 5. Запуск
 document.addEventListener('DOMContentLoaded', async () => {
   await AchievementsModule.load();
   if (window.state.decks.length === 0) {

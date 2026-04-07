@@ -27,8 +27,7 @@
 }
 [data-card-style='minimal'] { --cr:2px; --cf:'Arial',sans-serif; --cb:none; --glow:none; }
 [data-card-style='retro'] { --cr:0; --cf:'Courier New',monospace; --cb:3px solid var(--text); --glow:none; }
- 
-/* ══ RESET ═════════════════════════════════════════════════════════════ */
+
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif;
   transition:background .3s, color .3s; }
@@ -36,7 +35,6 @@ body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif;
 .page { max-width:820px; margin:2rem auto; padding:0 1rem; }
 .page-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
  
-/* ══ НАВІГАЦІЯ ══════════════════════════════════════════════════════════ */
 .navbar { display:flex; align-items:center; gap:1rem; padding:1rem 2rem;
   background:var(--bg2); border-bottom:1px solid var(--border);
   position:sticky; top:0; z-index:100; }
@@ -45,20 +43,17 @@ body { background:var(--bg); color:var(--text); font-family:Arial,sans-serif;
   border-radius:6px; font-size:.9rem; transition:background .2s; }
 .nav-links a:hover { background:var(--accent); color:#fff; }
  
-/* ══ КНОПКИ ════════════════════════════════════════════════════════════ */
 button { background:var(--accent); color:#fff; border:none; border-radius:8px;
   padding:.6rem 1.4rem; font-size:1rem; cursor:pointer; transition:opacity .2s; }
 button:hover { opacity:.85; }
 button.secondary { background:var(--bg2); color:var(--text); border:1px solid var(--border); }
 .active-pick { outline:3px solid var(--accent); }
  
-/* ══ HERO ═══════════════════════════════════════════════════════════════ */
 .hero { text-align:center; padding:3rem 1rem; }
 .hero h1 { font-size:2.5rem; margin-bottom:.5rem; }
 .hero-sub { color:var(--text2); margin-bottom:1rem; }
 .hero-btn { font-size:1.2rem; padding:.8rem 2rem; margin-top:1rem; }
  
-/* ══ КОЛОДИ ═════════════════════════════════════════════════════════════ */
 .decks-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
 .deck-card { background:var(--bg2); border:2px solid var(--border); border-radius:12px;
   padding:1.2rem; cursor:default; transition:.2s; }
@@ -68,7 +63,6 @@ button.secondary { background:var(--bg2); color:var(--text); border:1px solid va
 .deck-actions { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.8rem; }
 .deck-actions button { padding:.4rem .8rem; font-size:.85rem; }
  
-/* ══ FLASHCARD (FLIP) ══════════════════════════════════════════════════ */
 .study-top { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; }
 .progress-bar { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
 #progress-fill { height:100%; background:var(--accent); transition:width .4s; }
@@ -93,19 +87,16 @@ button.secondary { background:var(--bg2); color:var(--text); border:1px solid va
 .fail-btn { background:var(--fail); }
 .ok-btn   { background:var(--ok);   }
  
-/* ══ ГОЛОС ══════════════════════════════════════════════════════════════ */
 .voice-area { display:flex; align-items:center; gap:1rem; margin-top:1rem; flex-wrap:wrap; }
 .voice-preview { font-style:italic; color:var(--text2); font-size:.9rem; }
 button.listening { background:var(--fail) !important; animation:pulse 1s ease infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
  
-/* ══ МЕТРИКИ ════════════════════════════════════════════════════════════ */
 .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin:1.5rem 0; }
 .metric { background:var(--bg2); border:1px solid var(--border); border-radius:12px;
   padding:1rem; text-align:center; }
 .metric big { display:block; font-size:2rem; font-weight:bold; color:var(--accent); }
  
-/* ══ QUIZ ═══════════════════════════════════════════════════════════════ */
 .quiz-top { display:flex; align-items:center; gap:1rem; margin-bottom:.5rem; }
 .timer { font-size:1.1rem; font-weight:bold; }
 #quiz-timer.urgent { color:var(--fail); animation:blink .5s ease infinite; }
@@ -120,7 +111,6 @@ button.listening { background:var(--fail) !important; animation:pulse 1s ease in
 .opt.right { background:var(--ok);   color:#fff; border-color:var(--ok);   }
 .opt.wrong { background:var(--fail); color:#fff; border-color:var(--fail); }
  
-/* ══ ЗНИКНЕННЯ ══════════════════════════════════════════════════════════ */
 .vanish-q-label,.vanish-a-label { font-weight:bold; margin-bottom:.3rem; color:var(--text2); font-size:.9rem; }
 .vanish-q { font-size:1.1rem; margin-bottom:1rem; }
 .vanish-a { font-size:1.1rem; line-height:2.2; margin-bottom:.5rem; }
@@ -136,26 +126,22 @@ button.listening { background:var(--fail) !important; animation:pulse 1s ease in
 .badge-pill { background:var(--accent); color:#fff; border-radius:20px;
   padding:.2rem .8rem; font-size:.85rem; font-weight:normal; margin-left:.5rem; }
  
-/* ══ СТАТИСТИКА ══════════════════════════════════════════════════════════ */
 #heatmap-canvas { margin:1rem 0; border-radius:6px; }
 .weak-card { background:var(--bg2); border:1px solid var(--border);
   border-radius:8px; padding:.7rem 1rem; margin:.4rem 0; font-size:.95rem; }
- 
-/* ══ ДОСЯГНЕННЯ ══════════════════════════════════════════════════════════ */
+
 .badges-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:1rem; margin:1.5rem 0; }
 .badge { background:var(--bg2); border:2px solid var(--border); border-radius:12px;
   padding:1rem; text-align:center; display:flex; flex-direction:column; gap:.3rem; }
 .badge.unlocked { border-color:var(--accent); }
 .badge.locked   { opacity:.5; filter:grayscale(80%); }
  
-/* ══ TOAST ═══════════════════════════════════════════════════════════════ */
 .toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--bg2);
   border:2px solid var(--accent); border-radius:12px; padding:1rem;
   display:flex; align-items:center; gap:1rem; box-shadow:var(--shadow);
   min-width:260px; z-index:999; animation:slidein .3s ease; }
 @keyframes slidein { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }
- 
-/* ══ МОДАЛЬ ══════════════════════════════════════════════════════════════ */
+
 .modal { position:fixed; inset:0; background:rgba(0,0,0,.5);
   display:flex; justify-content:center; align-items:center; z-index:500; }
 .modal-box { background:var(--bg2); border-radius:16px; padding:2rem;
@@ -164,12 +150,10 @@ button.listening { background:var(--fail) !important; animation:pulse 1s ease in
 .modal-box input { padding:.6rem; border:1px solid var(--border); border-radius:8px;
   background:var(--bg); color:var(--text); font-size:1rem; }
 .modal-actions { display:flex; gap:.5rem; margin-top:.4rem; }
- 
-/* ══ НАЛАШТУВАННЯ ════════════════════════════════════════════════════════ */
+
 .setting-label { display:block; font-weight:bold; margin-bottom:.5rem; }
 .picker { display:flex; gap:.5rem; flex-wrap:wrap; }
  
-/* ══ АДАПТИВНІСТЬ ════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
   .flashcard   { height:240px; }
   .metrics     { grid-template-columns:1fr 1fr; }

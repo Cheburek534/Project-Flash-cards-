@@ -28,7 +28,6 @@ export class QuizModule {
    const wrong = this.state.cards
      .filter(c => c.id !== card.id && c.back !== card.back)
      .sort(() => Math.random() - 0.5).slice(0, 3).map(c => c.back);
-   // Якщо карток мало — додаємо заглушки
    while (wrong.length < 3) wrong.push('— невідомо —');
    const opts = [...wrong, card.back].sort(() => Math.random() - 0.5);
    return { q: card.front, answer: card.back, opts };
