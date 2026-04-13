@@ -61,19 +61,27 @@ window.listenForStudy = function() {
   });
 };
 
-window.showPage = function(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  const target = document.getElementById('page-' + pageId);
-  if (target) target.classList.remove('hidden');
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(s => s.classList.add('hidden'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.remove('hidden');
+  
+  if (name === 'stats')         ReflectionModule.render(state);
+  if (name === 'decks')         CardsModule.renderDecks(state);
+  if (name === 'achievements')  AchievementsModule.renderAll(state);
+  if (name === 'settings')      ThemeModule.renderPickers();
+  if (name === 'home') {
+      const streakEl = document.getElementById('home-streak');
+      if (streakEl) streakEl.textContent = state.progress.streak;
+  }
+}
 
-  if (pageId === 'stats') ReflectionModule.render(window.state);
-  if (pageId === 'achievements') AchievementsModule.renderAll(window.state);
-  if (pageId === 'decks') window.CardsModule.renderDecks();
-};
-
-window.CardsModule = {
-  openModal() { document.getElementById('modal').classList.remove('hidden'); },
-  createDeck() {
+export const CardsModule = {
+  openModal() { 
+      document.getElementById('modal').classList.remove('hidden'); 
+  },
+  
+  createDeck(state) {
     const name = document.getElementById('f-name').value;
     if (!name) return alert('Назва обов’язкова!');
     const deck = {
@@ -82,18 +90,20 @@ window.CardsModule = {
       desc: document.getElementById('f-desc').value,
       icon: document.getElementById('f-icon').value || '📚',
       color: document.getElementById('f-color').value,
-      custom: true
+      custom: true,
+      count: 0
     };
-    window.state.decks.push(deck);
-    StorageModule.save(window.state);
-    this.renderDecks();
+    state.decks.push(deck);
+    StorageModule.save(state);
+    this.renderDecks(state);
     document.getElementById('modal').classList.add('hidden');
   },
-  renderDecks() {
+  
+  renderDecks(state) {
     const grid = document.getElementById('decks-grid');
     if (!grid) return;
     grid.innerHTML = '';
-    window.state.decks.forEach(d => {
+    state.decks.forEach(d => {
       const div = document.createElement('div');
       div.className = 'deck-card';
       div.style.borderTop = `4px solid ${d.color}`;
@@ -101,6 +111,7 @@ window.CardsModule = {
         <div style='font-size:2rem'>${d.icon}</div>
         <h3>${d.name}</h3>
         <p>${d.desc}</p>
+        <p style="font-size:0.8rem; opacity:0.7">Карток: ${d.count || 0}</p>
         <div style="display:flex; gap:0.5rem; margin-top:1rem;">
           <button onclick="StudyModule.start('${d.id}')">Вчити</button>
           <button class='secondary' onclick="QuizModule.start('${d.id}')">Тест</button>
@@ -110,19 +121,26 @@ window.CardsModule = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await AchievementsModule.load();
-  if (window.state.decks.length === 0) {
+async function loadDefaultDecks() {
+  const files = [
+    './data/deck-javascript.json',
+    './data/deck-english.json',
+  ];
+  for (const file of files) {
     try {
-      const enData = await fetch('./data/deck-english.json').then(r => r.json());
-      const jsData = await fetch('./data/deck-javascript.json').then(r => r.json());
-      window.state.decks = [enData.deck, jsData.deck];
-      window.state.cards = [...enData.cards, ...jsData.cards];
-      StorageModule.save(window.state);
-    } catch (e) { console.error("Error:", e); }
+      const data = await fetch(file).then(r => r.json());
+      state.decks.push(data.deck);
+      state.cards.push(...data.cards);
+      state.decks[state.decks.length-1].count = data.cards.length;
+    } catch(e) {
+      console.warn('Не вдалось завантажити', file, ':', e.message);
+    }
   }
-  window.CardsModule.renderDecks();
-  const streakEl = document.getElementById('home-streak');
-  if (streakEl) streakEl.textContent = window.state.progress.streak;
-  ThemeModule.apply(window.state.settings.theme, window.state.settings.cardStyle);
-});
+  StorageModule.save(state);
+}
+
+showPage('home');
+const streakEl = document.getElementById('home-streak');
+if (streakEl) streakEl.textContent = state.progress.streak;
+CardsModule.renderDecks(state);
+ThemeModule.renderPickers();
