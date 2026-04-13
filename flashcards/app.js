@@ -1,19 +1,32 @@
-import { StorageModule } from './modules/storage.js';
-import { ThemeModule } from './modules/themes.js';
-import { StudyModule as StudyClass } from './modules/study.js';
-import { QuizModule as QuizClass } from './modules/quiz.js';
-import { ReflectionModule } from './modules/reflection.js';
-import { AchievementsModule } from './modules/achievements.js';
-import { VoiceModule } from './modules/voice.js';
+import { StorageModule }       from './modules/storage.js';
+import { ThemeModule }         from './modules/themes.js';
+import { StudyModule }         from './modules/study.js';
+import { ReflectionModule }    from './modules/reflection.js';
+import { VoiceModule }         from './modules/voice.js';
+import { QuizModule }          from './modules/quiz.js';
+import { CardsModule }         from './modules/cards.js';
+import { VanishModule }        from './modules/vanish.js';
+import { AchievementsModule }  from './modules/achievements.js';
 
-window.state = StorageModule.load();
-window.voice = new VoiceModule();
-window.StudyModule = new StudyClass(window.state);
-window.QuizModule = new QuizClass(window.state, window.voice);
+const state = StorageModule.load();
 
-window.StorageModule = StorageModule;
-window.ReflectionModule = ReflectionModule;
-window.ThemeModule = ThemeModule;
+const hasDefaults = state.decks.some(d => !d.custom);
+if (!hasDefaults) await loadDefaultDecks();
+await AchievementsModule.load();
+
+ThemeModule.apply(state.settings.theme, state.settings.cardStyle);
+
+window.voice              = new VoiceModule();
+window.state              = state;
+window.showPage           = showPage;
+window.StorageModule      = StorageModule;
+window.ThemeModule        = ThemeModule;
+window.StudyModule        = new StudyModule(state);
+window.QuizModule         = new QuizModule(state, window.voice);
+window.CardsModule        = CardsModule;
+window.VanishModule       = new VanishModule(state);
+window.AchievementsModule = AchievementsModule;
+window.ReflectionModule   = ReflectionModule;
 
 window.listenForStudy = function() {
   if (!window.voice || !window.voice.ok) {
