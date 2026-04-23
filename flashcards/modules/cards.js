@@ -1,60 +1,57 @@
 import { StorageModule } from './storage.js';
- 
+
+function memoizeRender(fn) {
+    let cacheHTML = '';
+    let lastCount = -1;
+
+    return function(state) {
+        const currentCount = state.decks.length;
+        if (currentCount === lastCount && cacheHTML) {
+            document.getElementById('decks-grid').innerHTML = cacheHTML;
+            return;
+        }
+        lastCount = currentCount;
+        cacheHTML = fn(state);
+        document.getElementById('decks-grid').innerHTML = cacheHTML;
+    };
+}
+
 export const CardsModule = {
-  openModal() { document.getElementById('modal').classList.remove('hidden'); },
- 
-  createDeck() {
-    const name  = document.getElementById('f-name').value.trim();
-    const desc  = document.getElementById('f-desc').value.trim();
-    const icon  = document.getElementById('f-icon').value.trim() || '📚';
-    const color = document.getElementById('f-color').value;
-    if (!name) { alert('Введи назву колоди!'); return; }
-    const deck = { id:'d'+Date.now(), name, desc, icon, color, count:0, custom:true };
-    window.state.decks.push(deck);
-    StorageModule.save(window.state);
-    document.getElementById('modal').classList.add('hidden');
-    ['f-name','f-desc','f-icon'].forEach(id => document.getElementById(id).value='');
-    this.renderDecks(window.state);
-  },
- 
-  deleteDeck(deckId) {
-    if (!confirm('Видалити колоду разом з усіма картками?')) return;
-    window.state.decks = window.state.decks.filter(d => d.id !== deckId);
-    window.state.cards = window.state.cards.filter(c => c.deckId !== deckId);
-    StorageModule.save(window.state);
-    this.renderDecks(window.state);
-  },
- 
-  renderDecks(state) {
-    const grid = document.getElementById('decks-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    if (!state.decks.length) {
-      grid.innerHTML = '<p style="opacity:.6">Колод ще немає. Завантаження...</p>';
-      return;
-    }
-    const sorted = [
-      ...state.decks.filter(d => !d.custom),
-      ...state.decks.filter(d =>  d.custom)
-    ];
-    sorted.forEach(deck => {
-      const div = document.createElement('div');
-      div.className = 'deck-card';
-      div.style.borderColor = deck.color;
-      div.innerHTML = `
-        <div class='deck-icon'>${deck.icon}</div>
-        <strong>${deck.name}</strong>
-        <p class='deck-desc'>${deck.desc || ''}</p>
-        <small>${deck.count} карток</small>
-        <div class='deck-actions'>
-          <button onclick='StudyModule.start("${deck.id}")'>📖 Вчити</button>
-          <button onclick='QuizModule.start("${deck.id}")' class='secondary'>📝 Тест</button>
-          <button onclick='VanishModule.start("${deck.id}")' class='secondary'>🌫️</button>
-          ${deck.custom
-            ? `<button onclick='CardsModule.deleteDeck("${deck.id}")' class='secondary'>🗑</button>`
-            : ''}
-        </div>`;
-      grid.appendChild(div);
-    });
-  }
+    openModal() { document.getElementById('modal').classList.remove('hidden'); },
+    createDeck(state) {
+        const name = document.getElementById('f-name').value;
+        if (!name) return alert('Назва обов\'язкова!');
+
+        state.decks.push({
+            id: 'deck-' + Date.now(),
+            name,
+            desc: document.getElementById('f-desc').value,
+            icon: document.getElementById('f-icon').value || '🗂️',
+            color: document.getElementById('f-color').value,
+            custom: true, count: 0
+        });
+
+        StorageModule.save(state);
+        this.renderDecks(state);
+        document.getElementById('modal').classList.add('hidden');
+    },
+
+    renderDecks: memoizeRender(function(state) {
+        let html = '';
+        state.decks.forEach(d => {
+            html += `
+            <div class='deck-card' style='border-top: 4px solid ${d.color}'>
+                <div style='font-size:2rem'>${d.icon}</div>
+                <h3>${d.name}</h3>
+                <p>${d.desc}</p>
+                <p style="font-size:0.8rem; opacity:0.7">Карток: ${d.count || 0}</p>
+                <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap: wrap;">
+                    <button onclick="StudyModule.start('${d.id}')">Вчити</button>
+                    <button class='secondary' onclick="QuizModule.start('${d.id}')">Тест</button>
+                    <button class='secondary' style='background:#e74c3c; color:white;' onclick="StudyModule.startBlitz('${d.id}')">⚡ Бліц</button>
+                </div>
+            </div>`;
+        });
+        return html; 
+    })
 };
