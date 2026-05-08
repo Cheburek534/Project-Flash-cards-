@@ -30,6 +30,52 @@ export class QuizModule {
         this._showQ();
     }
 
+_makeQuestion(card) {
+        const wrong = this.state.cards
+            .filter(c => c.id !== card.id && c.back !== card.back)
+            .sort(() => Math.random() - 0.5).slice(0, 3).map(c => c.back);
+        while (wrong.length < 3) wrong.push('- невідомо -');
+        const opts = [...wrong, card.back].sort(() => Math.random() - 0.5);
+        return { q: card.front, answer: card.back, opts };
+    }
+
+    _showQ() {
+        const q = this.qs[this.idx];
+        if (!q) { this._end(); return; }
+
+        document.getElementById('quiz-question').textContent = q.q;
+        document.getElementById('quiz-counter').textContent = (this.idx+1) + ' / ' + this.qs.length;
+        document.getElementById('quiz-score').textContent = this.score + ' балів';
+
+        const box = document.getElementById('quiz-options');
+        box.innerHTML = '';
+
+        q.opts.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt secondary';
+            btn.textContent = ['A','B','C','D'][i] + '. ' + opt;
+
+            btn.onclick = () => {
+                if (!btn.disabled) this.answer(opt);
+            };
+            box.appendChild(btn);
+        });
+
+        ['voice-quiz-preview'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.textContent='';
+        });
+
+        if (this.mode === 'blitz') {
+            this._startTimer();
+            const timerEl = document.getElementById('quiz-timer');
+            if(timerEl) timerEl.parentElement.style.display = 'block';
+        } else {
+            clearInterval(this.timer);
+            const timerEl = document.getElementById('quiz-timer');
+            if(timerEl) timerEl.parentElement.style.display = 'none';
+        }
+    }
+    
     _end() {
         clearInterval(this.timer);
         const max = this.qs.length * 20;
