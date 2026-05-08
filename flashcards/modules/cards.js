@@ -18,7 +18,10 @@ function memoizeRender(fn) {
 
 export const CardsModule = {
     openModal() { document.getElementById('modal').classList.remove('hidden'); },
-    createDeck(state) {
+    openModal() { document.getElementById('modal').classList.remove('hidden'); },
+    
+    createDeck() {
+        const state = window.state; 
         const name = document.getElementById('f-name').value;
         if (!name) return alert('Назва обов\'язкова!');
 
