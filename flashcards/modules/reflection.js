@@ -7,8 +7,17 @@ export const ReflectionModule = {
     const avgT    = s.timePerCard.length
       ? (s.timePerCard.reduce((a,b)=>a+b,0)/s.timePerCard.length).toFixed(1)
       : 0;
+    
     document.getElementById('r-pct').textContent = pct + '%';
     document.getElementById('r-avg').textContent = avgT + 'с';
+
+    const resShown = document.getElementById('result-shown');
+    const resCorrect = document.getElementById('result-correct');
+    const resPct = document.getElementById('result-pct');
+    if (resShown) resShown.textContent = total;
+    if (resCorrect) resCorrect.textContent = s.correct;
+    if (resPct) resPct.textContent = pct + '%';
+
     this._drawChart(s.timePerCard);
     document.getElementById('modal-reflect').classList.remove('hidden');
   },
