@@ -99,7 +99,38 @@ _startTimer() {
         }
         if (fill) fill.style.width = (this.left/this.limit*100)+'%';
     }
-    
+
+answer(selected) {
+        clearInterval(this.timer);
+        const q = this.qs[this.idx];
+
+        const ok = selected !== null && (
+            selected === q.answer ||
+            (this.voice && this.voice.matches && this.voice.matches(selected, q.answer))
+        );
+
+        document.querySelectorAll('.opt').forEach(btn => {
+            btn.disabled = true; 
+            const txt = btn.textContent.slice(3);
+            if (txt === q.answer) btn.classList.add('right');
+            else if (selected !== null && txt === selected) btn.classList.add('wrong');
+        });
+
+        if (ok) {
+            this.score += 10 + Math.round(this.left / this.limit * 10);
+            if (this.left > 12) {
+                this.state.progress.fastAnswers = (this.state.progress.fastAnswers || 0) + 1;
+            }
+        }
+
+        setTimeout(() => { this.idx++; this._showQ(); }, 1500);
+    }
+
+    listenVoice() {
+        if (!this.voice?.ok) { alert('Голос не підтримується'); return; }
+        this.voice.listen(text => this.answer(text));
+    }
+
     _end() {
         clearInterval(this.timer);
         const max = this.qs.length * 20;
