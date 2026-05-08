@@ -1,4 +1,4 @@
-import { StorageModule } } from './modules/storage.js';
+import { StorageModule } from './modules/storage.js';
 import { ThemeModule } from './modules/themes.js';
 import { StudyModule } from './modules/study.js';
 import { ReflectionModule } from './modules/reflection.js';
