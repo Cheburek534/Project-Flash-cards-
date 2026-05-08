@@ -75,6 +75,30 @@ _makeQuestion(card) {
             if(timerEl) timerEl.parentElement.style.display = 'none';
         }
     }
+
+_startTimer() {
+        this.left = this.limit;
+        this._updateTimer();
+        clearInterval(this.timer);
+        this.timer = setInterval(() => {
+            this.left--;
+            this._updateTimer();
+            if (this.left <= 0) {
+                clearInterval(this.timer);
+                this.answer(null);
+            }
+        }, 1000);
+    }
+
+    _updateTimer() {
+        const el = document.getElementById('quiz-timer');
+        const fill = document.getElementById('timer-fill');
+        if (el) {
+            el.textContent = '⏱ ' + this.left + 'c';
+            el.classList.toggle('urgent', this.left <= 5);
+        }
+        if (fill) fill.style.width = (this.left/this.limit*100)+'%';
+    }
     
     _end() {
         clearInterval(this.timer);
