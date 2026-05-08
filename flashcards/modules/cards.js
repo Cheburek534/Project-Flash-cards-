@@ -18,7 +18,6 @@ function memoizeRender(fn) {
 
 export const CardsModule = {
     openModal() { document.getElementById('modal').classList.remove('hidden'); },
-    openModal() { document.getElementById('modal').classList.remove('hidden'); },
     
     createDeck() {
         const state = window.state; 
